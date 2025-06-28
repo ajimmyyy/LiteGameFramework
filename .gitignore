@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+
+# dependence
+deps/
+
+# build
+cmake-build-debug/
+build/
