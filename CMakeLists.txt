@@ -8,21 +8,22 @@ if (MSVC)
     add_compile_options(/W4)
 endif()
 
-# ───── 設定 FreeGLUT ─────
-set(FREEGLUT_DIR "${CMAKE_SOURCE_DIR}/deps/freeglut")
-
-if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-    set(FREEGLUT_LIB_DIR "${FREEGLUT_DIR}/lib/x64")
-else()
-    set(FREEGLUT_LIB_DIR "${FREEGLUT_DIR}/lib")
-endif()
-
-include_directories(${FREEGLUT_DIR}/include)
-link_directories(${FREEGLUT_LIB_DIR})
+# ───── 加入 GLFW ─────
+include(FetchContent)
+FetchContent_Declare(
+        glfw
+        GIT_REPOSITORY https://github.com/glfw/glfw.git
+        GIT_TAG        3.4
+)
+FetchContent_MakeAvailable(glfw)
 
 # ───── 設定 GLM ─────
 set(GLM_DIR "${CMAKE_SOURCE_DIR}/deps/glm")
 include_directories(${GLM_DIR})
+
+# ───── 加入 glad ─────
+set(GLAD_DIR "${CMAKE_SOURCE_DIR}/deps/glad")
+add_subdirectory(deps/glad)
 
 # ───── 設定 stb_image ─────
 set(STB_IMAGE_DIR "${CMAKE_SOURCE_DIR}/deps/stb")
@@ -40,28 +41,26 @@ file(GLOB_RECURSE SOURCES
 
 # ───── 主程式 ─────
 add_executable(LiteGameFramework ${SOURCES}
-        include/Resources/IModelLoader.h
-        include/Resources/ITextureLoader.h)
+        include/Renderer/GLMeshResource.h
+        src/Core/Game.cpp
+        include/Game.h)
 
 target_include_directories(LiteGameFramework PRIVATE
         ${CMAKE_SOURCE_DIR}/src
         ${GLM_DIR}
+        ${STB_IMAGE_DIR}
+        ${glfw_SOURCE_DIR}/include
+        ${GLAD_DIR}/include
 )
 
 target_link_libraries(LiteGameFramework
+        glfw
+        glad
         ${OPENGL_gl_LIBRARY}
-        freeglut.lib
-)
-
-add_custom_command(TARGET LiteGameFramework POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${FREEGLUT_DIR}/bin/freeglut.dll"
-        $<TARGET_FILE_DIR:LiteGameFramework>
 )
 
 # ───── 測試 ─────
 # ───── 設定 Catch2 ─────
-include(FetchContent)
 FetchContent_Declare(
         Catch2
         GIT_REPOSITORY https://github.com/catchorg/Catch2.git
@@ -70,7 +69,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Catch2)
 
 # ───── 設定 trompeloeil ─────
-include(FetchContent)
 FetchContent_Declare(
         trompeloeil
         GIT_REPOSITORY https://github.com/rollbear/trompeloeil.git
@@ -96,12 +94,7 @@ target_include_directories(ModelLoaderTest PRIVATE
 target_link_libraries(ModelLoaderTest
         Catch2::Catch2WithMain
         trompeloeil
+        glfw
+        glad
         ${OPENGL_gl_LIBRARY}
-        freeglut.lib
-)
-
-add_custom_command(TARGET ModelLoaderTest POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${FREEGLUT_DIR}/bin/freeglut.dll"
-        $<TARGET_FILE_DIR:ModelLoaderTest>
 )

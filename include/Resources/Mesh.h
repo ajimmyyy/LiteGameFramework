@@ -9,5 +9,4 @@
 struct Mesh {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    // 可選：VAO/VBO 封裝
 };

@@ -22,5 +22,5 @@ Texture LoadFromFile(const std::string& path) {
     std::vector<unsigned char> pixels(data, data + (width * height * channels));
     stbi_image_free(data);
 
-    return { width, height, channels, std::move(pixels) };
+    return { width, height, channels, std::move(pixels), path };
 }

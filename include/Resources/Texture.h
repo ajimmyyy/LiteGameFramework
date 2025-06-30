@@ -10,5 +10,6 @@ struct Texture {
     int height;
     int channels;
     std::vector<unsigned char> pixels;
+    std::string name;
 };
 
