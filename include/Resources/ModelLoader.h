@@ -13,5 +13,5 @@
 class ModelLoader : public IModelLoader {
 public:
     using ReadTextFunc = std::function<std::string(const std::string&)>;
-    static Model LoadFromOBJ(const std::string& path, ReadTextFunc readFunc = FileSystem::ReadTextFile);
+    static Model loadFromOBJ(const std::string& path, ReadTextFunc readFunc = FileSystem::readTextFile);
 };

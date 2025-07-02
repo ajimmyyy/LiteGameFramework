@@ -29,6 +29,10 @@ add_subdirectory(deps/glad)
 set(STB_IMAGE_DIR "${CMAKE_SOURCE_DIR}/deps/stb")
 include_directories(${STB_IMAGE_DIR})
 
+# ───── 設定 json ─────
+set(JSON_DIR "${CMAKE_SOURCE_DIR}/deps/nlohmann")
+include_directories(${JSON_DIR})
+
 # ───── 尋找 OpenGL ─────
 find_package(OpenGL REQUIRED)
 
@@ -40,10 +44,7 @@ file(GLOB_RECURSE SOURCES
 )
 
 # ───── 主程式 ─────
-add_executable(LiteGameFramework ${SOURCES}
-        include/Renderer/GLMeshResource.h
-        src/Core/Game.cpp
-        include/Game.h)
+add_executable(LiteGameFramework ${SOURCES})
 
 target_include_directories(LiteGameFramework PRIVATE
         ${CMAKE_SOURCE_DIR}/src
@@ -51,6 +52,7 @@ target_include_directories(LiteGameFramework PRIVATE
         ${STB_IMAGE_DIR}
         ${glfw_SOURCE_DIR}/include
         ${GLAD_DIR}/include
+        ${JSON_DIR}
 )
 
 target_link_libraries(LiteGameFramework

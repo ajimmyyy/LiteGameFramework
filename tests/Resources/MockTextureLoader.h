@@ -8,5 +8,5 @@
 
 class MockTextureLoader : public ITextureLoader {
 public:
-    MAKE_MOCK1(LoadFromFile, Texture(const std::string&), override);
+    MAKE_MOCK1(loadFromFile, Texture(const std::string&), override);
 };

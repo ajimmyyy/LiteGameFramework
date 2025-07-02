@@ -8,5 +8,5 @@
 
 struct ITextureLoader {
     virtual ~ITextureLoader() = default;
-    virtual Texture LoadFromFile(const std::string& path) = 0;
+    virtual Texture loadFromFile(const std::string& path) = 0;
 };

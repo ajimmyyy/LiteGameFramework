@@ -5,8 +5,8 @@
 #pragma once
 
 #include <memory>
-#include "../resources/Model.h"
-#include "../resources/Texture.h"
+#include "../../resources/Model.h"
+#include "../../resources/Texture.h"
 
 struct RenderComponent {
     std::shared_ptr<Model> model;

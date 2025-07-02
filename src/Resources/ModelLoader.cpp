@@ -9,7 +9,7 @@
 #include <unordered_map>
 #include <glm/glm.hpp>
 
-Model ModelLoader::LoadFromOBJ(const std::string& path, ReadTextFunc readFunc) {
+Model ModelLoader::loadFromOBJ(const std::string& path, ReadTextFunc readFunc) {
     std::string content = readFunc(path);
     std::istringstream stream(content);
 

@@ -8,5 +8,5 @@
 
 class MockModelLoader : public IModelLoader {
 public:
-    MAKE_MOCK1(LoadFromOBJ, Model(const std::string&), override);
+    MAKE_MOCK1(loadFromOBJ, Model(const std::string&), override);
 };

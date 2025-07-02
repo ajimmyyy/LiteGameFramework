@@ -10,7 +10,7 @@
 #include "../../include/Resources/ResourceManager.h"
 
 TEST_CASE("ResourceManager ModelLoader Test", "[ModelLoader][Trompeloeil]") {
-    ResourceManager::Shutdown();
+    ResourceManager::shutdown();
 
     // 建立假的模型資料
     Model fakeModel;
@@ -40,10 +40,10 @@ TEST_CASE("ResourceManager ModelLoader Test", "[ModelLoader][Trompeloeil]") {
         .RETURN(fakeModel);
 
     // 注入 mock
-    ResourceManager::SetModelLoader(mockLoader);
+    ResourceManager::setModelLoader(mockLoader);
 
     // 執行測試
-    auto modelPtr = ResourceManager::LoadModel("dummy.obj");
+    auto modelPtr = ResourceManager::loadModel("dummy.obj");
 
     REQUIRE(modelPtr != nullptr);
     REQUIRE(modelPtr->meshes.size() == 1);

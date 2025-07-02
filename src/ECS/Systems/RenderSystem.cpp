@@ -2,14 +2,14 @@
 // Created by jimmy on 2025/6/28.
 //
 
-#include "../../include/ECS/RenderSystem.h"
-#include "../../include/Renderer/IRenderer.h"
+#include "../../../include/ECS/Systems/RenderSystem.h"
+#include "../../../include/Renderer/IRenderer.h"
 #include <ranges>
 
 RenderSystem::RenderSystem(IRenderer* renderer, EntityManager* entityManager)
     : renderer(renderer), entityManager(entityManager) {}
 
-void RenderSystem::update() {
+void RenderSystem::render(float alpha) {
     auto& map = entityManager->getComponentMap<RenderComponent>();
     for (auto& rc : map | std::views::values) {
         if (rc.model && rc.texture) {

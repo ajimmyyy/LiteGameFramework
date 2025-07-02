@@ -8,8 +8,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-OpenGLRenderer::OpenGLRenderer()
+OpenGLRenderer::OpenGLRenderer(WindowGLFW* win)
     : viewMatrix(1.0f), projectionMatrix(1.0f) {
+    window = win;
 }
 
 OpenGLRenderer::~OpenGLRenderer() {
@@ -17,41 +18,22 @@ OpenGLRenderer::~OpenGLRenderer() {
 }
 
 bool OpenGLRenderer::initialize() {
-    if (!setupWindow()) return false;
-    if (!setupShaders()) return false;
-
-    // 相機設置
-    viewMatrix = glm::lookAt(glm::vec3(0, 0, 5), glm::vec3(0), glm::vec3(0, 1, 0));
-    projectionMatrix = glm::perspective(glm::radians(45.0f), 4.f / 3.f, 0.1f, 100.f);
-
-    return true;
-}
-
-bool OpenGLRenderer::setupWindow() {
-    if (!glfwInit()) {
-        std::cerr << "Failed to initialize GLFW.\n";
-        return false;
-    }
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    window = glfwCreateWindow(800, 600, "OpenGLRenderer", nullptr, nullptr);
-    if (!window) {
-        std::cerr << "Failed to create GLFW window.\n";
-        glfwTerminate();
-        return false;
-    }
-
-    glfwMakeContextCurrent(window);
-
+    // 初始化OpenGL
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cerr << "Failed to initialize GLAD.\n";
         return false;
     }
 
+    // 設定shaders
+    if (!setupShaders()) return false;
+
+    // 開啟深度測試
     glEnable(GL_DEPTH_TEST);
+
+    // 相機設置
+    viewMatrix = glm::lookAt(glm::vec3(0, 0, 5), glm::vec3(0), glm::vec3(0, 1, 0));
+    projectionMatrix = glm::perspective(glm::radians(45.0f), 4.f / 3.f, 0.1f, 100.f);
+
     return true;
 }
 
@@ -114,8 +96,7 @@ void OpenGLRenderer::shutdown() {
     }
 
     if (window) {
-        glfwDestroyWindow(window);
-        glfwTerminate();
+        window->shutdown();
         window = nullptr;
     }
 }

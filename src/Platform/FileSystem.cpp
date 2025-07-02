@@ -8,8 +8,8 @@
 
 std::string FileSystem::basePath = "";
 
-std::string FileSystem::ReadTextFile(const std::string& path) {
-    std::ifstream file(ResolvePath(path));
+std::string FileSystem::readTextFile(const std::string& path) {
+    std::ifstream file(resolvePath(path));
     if (!file.is_open()) {
         throw std::runtime_error("Failed to open file: " + path);
     }
@@ -19,8 +19,8 @@ std::string FileSystem::ReadTextFile(const std::string& path) {
     return buffer.str();
 }
 
-std::vector<char> FileSystem::ReadBinaryFile(const std::string& path) {
-    std::ifstream file(ResolvePath(path), std::ios::binary);
+std::vector<char> FileSystem::readBinaryFile(const std::string& path) {
+    std::ifstream file(resolvePath(path), std::ios::binary);
     if (!file.is_open()) {
         throw std::runtime_error("Failed to open file: " + path);
     }
@@ -34,23 +34,23 @@ std::vector<char> FileSystem::ReadBinaryFile(const std::string& path) {
     return data;
 }
 
-bool FileSystem::Exists(const std::string& path) {
-    return std::filesystem::exists(ResolvePath(path));
+bool FileSystem::exists(const std::string& path) {
+    return std::filesystem::exists(resolvePath(path));
 }
 
-std::vector<std::string> FileSystem::ListFiles(const std::string& directory) {
+std::vector<std::string> FileSystem::listFiles(const std::string& directory) {
     std::vector<std::string> files;
-    for (const auto& entry : std::filesystem::directory_iterator(ResolvePath(directory))) {
+    for (const auto& entry : std::filesystem::directory_iterator(resolvePath(directory))) {
         files.push_back(entry.path().string());
     }
     return files;
 }
 
-void FileSystem::SetBasePath(const std::string& base) {
+void FileSystem::setBasePath(const std::string& base) {
     basePath = base;
 }
 
-std::string FileSystem::ResolvePath(const std::string& relative) {
+std::string FileSystem::resolvePath(const std::string& relative) {
     if (basePath.empty())
         return relative;
     return basePath + "/" + relative;

@@ -15,19 +15,19 @@
 
 class ResourceManager {
 public:
-    static void Init();  // optional: 設定資源路徑
-    static void Shutdown();
+    static void init();  // optional: 設定資源路徑
+    static void shutdown();
 
     // Loader
-    static void SetModelLoader(std::shared_ptr<IModelLoader> loader);
-    static void SetTextureLoader(std::shared_ptr<ITextureLoader> loader);
+    static void setModelLoader(std::shared_ptr<IModelLoader> loader);
+    static void setTextureLoader(std::shared_ptr<ITextureLoader> loader);
 
     // Model
-    static std::shared_ptr<Model> LoadModel(const std::string& path);
-    static std::shared_ptr<Model> GetModel(const std::string& path);
+    static std::shared_ptr<Model> loadModel(const std::string& path);
+    static std::shared_ptr<Model> getModel(const std::string& path);
     //Texture
-    static std::shared_ptr<Texture> LoadTexture(const std::string& path);
-    static std::shared_ptr<Texture> GetTexture(const std::string& path);
+    static std::shared_ptr<Texture> loadTexture(const std::string& path);
+    static std::shared_ptr<Texture> getTexture(const std::string& path);
 
 private:
     inline static std::shared_ptr<IModelLoader> modelLoader = nullptr;

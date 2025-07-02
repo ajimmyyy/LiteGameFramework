@@ -12,7 +12,7 @@
 class TextureLoader : public ITextureLoader {
 public:
     // 載入並建立 OpenGL 紋理，回傳 Texture 結構
-    static Texture LoadFromFile(const std::string& path);
+    static Texture loadFromFile(const std::string& path);
 
 private:
 };

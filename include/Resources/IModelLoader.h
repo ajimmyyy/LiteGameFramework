@@ -8,5 +8,5 @@
 
 struct IModelLoader {
     virtual ~IModelLoader() = default;
-    virtual Model LoadFromOBJ(const std::string& path) = 0;
+    virtual Model loadFromOBJ(const std::string& path) = 0;
 };

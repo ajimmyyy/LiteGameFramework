@@ -15,13 +15,13 @@ protected:
     std::shared_ptr<MockTextureLoader> mockTextureLoader;
 
     ResourceManagerTestFixture() {
-        ResourceManager::Shutdown();
+        ResourceManager::shutdown();
 
         mockModelLoader = std::make_shared<MockModelLoader>();
         mockTextureLoader = std::make_shared<MockTextureLoader>();
 
-        ResourceManager::SetModelLoader(mockModelLoader);
-        ResourceManager::SetTextureLoader(mockTextureLoader);
+        ResourceManager::setModelLoader(mockModelLoader);
+        ResourceManager::setTextureLoader(mockTextureLoader);
     }
 };
 
@@ -36,18 +36,18 @@ TEST_CASE_METHOD(ResourceManagerTestFixture, "ResourceManager Model loading and 
         .TIMES(1)
         .RETURN(dummyModel);
 
-    auto model1 = ResourceManager::LoadModel(path);
+    auto model1 = ResourceManager::loadModel(path);
     REQUIRE(model1 != nullptr);
     REQUIRE(model1->name == path);
 
     // 第二次載入用快取
-    auto model2 = ResourceManager::LoadModel(path);
+    auto model2 = ResourceManager::loadModel(path);
     REQUIRE(model2 == model1);
 
-    auto fetched = ResourceManager::GetModel(path);
+    auto fetched = ResourceManager::getModel(path);
     REQUIRE(fetched == model1);
 
-    auto notLoaded = ResourceManager::GetModel("unknown.obj");
+    auto notLoaded = ResourceManager::getModel("unknown.obj");
     REQUIRE(notLoaded == nullptr);
 }
 
@@ -65,18 +65,18 @@ TEST_CASE_METHOD(ResourceManagerTestFixture, "ResourceManager Texture loading an
         .TIMES(1)
         .RETURN(dummyTexture);
 
-    auto tex1 = ResourceManager::LoadTexture(path);
+    auto tex1 = ResourceManager::loadTexture(path);
     REQUIRE(tex1 != nullptr);
     REQUIRE(tex1->width == 256);
 
     // 第二次載入用快取
-    auto tex2 = ResourceManager::LoadTexture(path);
+    auto tex2 = ResourceManager::loadTexture(path);
     REQUIRE(tex2 == tex1);
 
-    auto fetched = ResourceManager::GetTexture(path);
+    auto fetched = ResourceManager::getTexture(path);
     REQUIRE(fetched == tex1);
 
-    auto notLoaded = ResourceManager::GetTexture("missing.png");
+    auto notLoaded = ResourceManager::getTexture("missing.png");
     REQUIRE(notLoaded == nullptr);
 }
 
@@ -102,14 +102,14 @@ TEST_CASE_METHOD(ResourceManagerTestFixture, "ResourceManager Shutdown clears ca
         .TIMES(1)
         .RETURN(dummyTexture);
 
-    auto model = ResourceManager::LoadModel(modelPath);
-    auto tex = ResourceManager::LoadTexture(texPath);
+    auto model = ResourceManager::loadModel(modelPath);
+    auto tex = ResourceManager::loadTexture(texPath);
 
-    REQUIRE(ResourceManager::GetModel(modelPath) != nullptr);
-    REQUIRE(ResourceManager::GetTexture(texPath) != nullptr);
+    REQUIRE(ResourceManager::getModel(modelPath) != nullptr);
+    REQUIRE(ResourceManager::getTexture(texPath) != nullptr);
 
-    ResourceManager::Shutdown();
+    ResourceManager::shutdown();
 
-    REQUIRE(ResourceManager::GetModel(modelPath) == nullptr);
-    REQUIRE(ResourceManager::GetTexture(texPath) == nullptr);
+    REQUIRE(ResourceManager::getModel(modelPath) == nullptr);
+    REQUIRE(ResourceManager::getTexture(texPath) == nullptr);
 }

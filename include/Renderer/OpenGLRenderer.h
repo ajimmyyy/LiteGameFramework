@@ -6,17 +6,17 @@
 
 #include <unordered_map>
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
 #include "GLMeshResource.h"
 #include "IRenderer.h"
 #include "../resources/Model.h"
 #include "../resources/Texture.h"
+#include "../Platform/WindowGLFW.h"
 
 class OpenGLRenderer : public IRenderer {
 public:
-    OpenGLRenderer();
+    explicit OpenGLRenderer(WindowGLFW* win);
     ~OpenGLRenderer() override;
 
     bool initialize() override;
@@ -25,7 +25,7 @@ public:
     void draw(Model& model, const Texture& texture) override;
 
 private:
-    GLFWwindow* window = nullptr;
+    WindowGLFW* window = nullptr;
 
     // Shader
     GLuint shaderProgram = 0;
@@ -38,7 +38,6 @@ private:
     std::unordered_map<std::string, GLuint> textureCache;
     std::unordered_map<const Mesh*, GLMeshResource> meshResourceCache;
 
-    bool setupWindow();
     bool setupShaders();
     void uploadMesh(Mesh& mesh);
     GLuint uploadTexture(const Texture& texture);

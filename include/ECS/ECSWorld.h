@@ -4,15 +4,20 @@
 
 #pragma once
 
-#include "EntityManager.h"
-#include "Entity.h"
-#include "System.h"
 #include <memory>
 #include <vector>
+
+#include "EntityManager.h"
+#include "Entity.h"
+#include "Systems/ISystem.h"
+#include "Systems/IRenderSystem.h"
+#include "../Renderer/IRenderer.h"
 
 class ECSWorld {
 public:
     ECSWorld();
+
+    void init(IRenderer* renderer);
 
     Entity createEntity();
 
@@ -22,15 +27,20 @@ public:
     template<typename T>
     T& getComponent(Entity entity);
 
-    void addSystem(const std::shared_ptr<System>& system);
+    void addUpdateSystem(const std::shared_ptr<ISystem>& system);
 
-    void update();
+    void addRenderSystem(const std::shared_ptr<IRenderSystem>& system);
+
+    void update(float deltaTime) const;
+
+    void render(float alpha) const;
 
     EntityManager& getEntityManager();
 
 private:
     EntityManager entityManager;
-    std::vector<std::shared_ptr<System>> systems;
+    std::vector<std::shared_ptr<ISystem>> updateSystems;
+    std::vector<std::shared_ptr<IRenderSystem>> renderSystems;
 };
 
 #include "ECSWorld.inl"

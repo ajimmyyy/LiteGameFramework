@@ -1,3 +1,7 @@
+#include "include/Core/Game.h"
+
 int main(int argc, char** argv) {
-    return 0;
+    Game* game = new Game;
+    game->init();
+    game->run();
 }

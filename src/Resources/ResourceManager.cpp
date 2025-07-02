@@ -7,35 +7,35 @@
 #include "../../include/Resources/TextureLoader.h"
 #include "../../include/Resources/AudioLoader.h"
 
-void ResourceManager::Init() {
+void ResourceManager::init() {
     // 可設定 basePath、讀取設定檔等
 }
 
-void ResourceManager::Shutdown() {
+void ResourceManager::shutdown() {
     modelCache.clear();
     textureCache.clear();
 }
 
-void ResourceManager::SetModelLoader(std::shared_ptr<IModelLoader> loader) {
+void ResourceManager::setModelLoader(std::shared_ptr<IModelLoader> loader) {
     modelLoader = std::move(loader);
 }
 
-void ResourceManager::SetTextureLoader(std::shared_ptr<ITextureLoader> loader) {
+void ResourceManager::setTextureLoader(std::shared_ptr<ITextureLoader> loader) {
     textureLoader = std::move(loader);
 }
 
-std::shared_ptr<Model> ResourceManager::LoadModel(const std::string& path) {
+std::shared_ptr<Model> ResourceManager::loadModel(const std::string& path) {
     auto it = modelCache.find(path);
     if (it != modelCache.end())
         return it->second;
 
-    Model m = modelLoader->LoadFromOBJ(path);
+    Model m = modelLoader->loadFromOBJ(path);
     auto ptr = std::make_shared<Model>(std::move(m));
     modelCache[path] = ptr;
     return ptr;
 }
 
-std::shared_ptr<Model> ResourceManager::GetModel(const std::string& path) {
+std::shared_ptr<Model> ResourceManager::getModel(const std::string& path) {
     auto it = modelCache.find(path);
     if (it != modelCache.end())
         return it->second;
@@ -43,18 +43,18 @@ std::shared_ptr<Model> ResourceManager::GetModel(const std::string& path) {
 }
 
 // Texture
-std::shared_ptr<Texture> ResourceManager::LoadTexture(const std::string& path) {
+std::shared_ptr<Texture> ResourceManager::loadTexture(const std::string& path) {
     auto it = textureCache.find(path);
     if (it != textureCache.end())
         return it->second;
 
-    Texture t = textureLoader->LoadFromFile(path);
+    Texture t = textureLoader->loadFromFile(path);
     auto ptr = std::make_shared<Texture>(std::move(t));
     textureCache[path] = ptr;
     return ptr;
 }
 
-std::shared_ptr<Texture> ResourceManager::GetTexture(const std::string& path) {
+std::shared_ptr<Texture> ResourceManager::getTexture(const std::string& path) {
     auto it = textureCache.find(path);
     if (it != textureCache.end())
         return it->second;
