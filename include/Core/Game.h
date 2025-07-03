@@ -5,6 +5,7 @@
 #pragma once
 #include <memory>
 
+#include "../Resources/ResourceManager.h"
 #include "../Renderer/IRenderer.h"
 #include "SceneManager.h"
 #include "GameLoop.h"
@@ -14,6 +15,7 @@ public:
     void init();
     void run() const;
     void shutdown();
+    [[nodiscard]] ECSWorld& getECSWorld() const;
 
 private:
     std::unique_ptr<IRenderer> renderer;

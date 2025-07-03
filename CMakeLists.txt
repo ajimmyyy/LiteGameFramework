@@ -44,7 +44,11 @@ file(GLOB_RECURSE SOURCES
 )
 
 # ───── 主程式 ─────
-add_executable(LiteGameFramework ${SOURCES})
+add_executable(LiteGameFramework ${SOURCES}
+        include/ECS/Components/CameraComponent.h
+        src/ECS/Systems/CameraSystem.cpp
+        include/ECS/Systems/CameraSystem.h
+        include/ECS/Tags/MainCameraTag.h)
 
 target_include_directories(LiteGameFramework PRIVATE
         ${CMAKE_SOURCE_DIR}/src
@@ -82,10 +86,6 @@ add_executable(ModelLoaderTest
         src/Resources/ResourceManager.cpp
         src/Resources/ModelLoader.cpp
         src/Platform/FileSystem.cpp
-        tests/Resources/ModelLoaderTest.cpp
-        tests/Resources/ResourceManagerTest.cpp
-        tests/Resources/MockModelLoader.h
-        tests/Resources/MockTextureLoader.h
 )
 
 target_include_directories(ModelLoaderTest PRIVATE

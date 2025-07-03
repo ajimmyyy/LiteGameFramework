@@ -16,7 +16,7 @@ public:
     void pollEvents() override;
     [[nodiscard]] bool shouldExit() const override;
     void swapBuffers() override;
-    [[nodiscard]] WindowGLFW* getWindow() const;
+    [[nodiscard]] WindowGLFW* getWindow() const override;
 
 private:
     std::unique_ptr<WindowGLFW> window;

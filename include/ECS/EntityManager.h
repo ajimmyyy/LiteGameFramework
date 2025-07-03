@@ -16,6 +16,9 @@ public:
     void addComponent(Entity entity, T component);
 
     template<typename T>
+    void removeComponent(Entity entity);
+
+    template<typename T>
     T& getComponent(Entity entity);
 
     template<typename T>

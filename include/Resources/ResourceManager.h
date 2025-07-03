@@ -15,7 +15,7 @@
 
 class ResourceManager {
 public:
-    static void init();  // optional: 設定資源路徑
+    static bool init();  // optional: 設定資源路徑
     static void shutdown();
 
     // Loader

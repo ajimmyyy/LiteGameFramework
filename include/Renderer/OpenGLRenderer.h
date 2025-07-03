@@ -19,10 +19,18 @@ public:
     explicit OpenGLRenderer(WindowGLFW* win);
     ~OpenGLRenderer() override;
 
+    void beginFrame() override;
+    void endFrame() override;
+
     bool initialize() override;
     void shutdown() override;
 
     void draw(Model& model, const Texture& texture) override;
+    void draw(Model& model) override;
+
+    void setViewMatrix(const glm::mat4& view, const glm::mat4& projection) override;
+
+    static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
 private:
     WindowGLFW* window = nullptr;
@@ -37,9 +45,11 @@ private:
     //Cache
     std::unordered_map<std::string, GLuint> textureCache;
     std::unordered_map<const Mesh*, GLMeshResource> meshResourceCache;
+    GLuint defaultTexture = 0;
 
     bool setupShaders();
     void uploadMesh(Mesh& mesh);
     GLuint uploadTexture(const Texture& texture);
+    void createDefaultTexture();
 };
 

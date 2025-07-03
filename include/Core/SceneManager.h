@@ -6,12 +6,14 @@
 #include <memory>
 #include "Scene.h"
 #include "../Renderer/IRenderer.h"
+#include "../Platform/IWindow.h"
 
 class SceneManager {
 public:
-    void loadInitialScene(IRenderer* renderer);
+    void loadInitialScene(IWindow* window, IRenderer* renderer);
     void update(float deltaTime) const;
     void render(float alpha) const;
+    [[nodiscard]] ECSWorld& getECSWorld() const;
 
 private:
     std::unique_ptr<Scene> currentScene;
