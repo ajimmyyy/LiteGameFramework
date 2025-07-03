@@ -9,8 +9,8 @@
 #include <unordered_map>
 #include <glm/glm.hpp>
 
-Model ModelLoader::loadFromOBJ(const std::string& path, ReadTextFunc readFunc) {
-    std::string content = readFunc(path);
+Model ModelLoader::loadFromOBJ(const std::string& path) {
+    std::string content = FileSystem::readTextFile(path);
     std::istringstream stream(content);
 
     std::vector<glm::vec3> positions;

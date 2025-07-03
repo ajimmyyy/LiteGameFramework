@@ -4,9 +4,9 @@
 
 #include "../../include/Core/SceneManager.h"
 
-void SceneManager::loadInitialScene(IRenderer* renderer) {
+void SceneManager::loadInitialScene(IWindow* window, IRenderer* renderer) {
     currentScene = std::make_unique<Scene>();
-    currentScene->init(renderer);
+    currentScene->init(window, renderer);
 }
 
 void SceneManager::update(float deltaTime) const {
@@ -15,4 +15,8 @@ void SceneManager::update(float deltaTime) const {
 
 void SceneManager::render(float alpha) const {
     if (currentScene) currentScene->render(alpha);
+}
+
+ECSWorld& SceneManager::getECSWorld() const {
+    return currentScene->getECSWorld();
 }

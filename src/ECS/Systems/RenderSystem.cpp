@@ -10,10 +10,18 @@ RenderSystem::RenderSystem(IRenderer* renderer, EntityManager* entityManager)
     : renderer(renderer), entityManager(entityManager) {}
 
 void RenderSystem::render(float alpha) {
+    renderer->beginFrame();
+
     auto& map = entityManager->getComponentMap<RenderComponent>();
     for (auto& rc : map | std::views::values) {
-        if (rc.model && rc.texture) {
-            renderer->draw(*rc.model, *rc.texture);
+        if (rc.model) {
+            if (rc.texture) {
+                renderer->draw(*rc.model, *rc.texture);
+            } else {
+                renderer->draw(*rc.model);
+            }
         }
     }
+
+    renderer->endFrame();
 }

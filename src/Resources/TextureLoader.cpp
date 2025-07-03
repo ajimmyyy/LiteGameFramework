@@ -11,7 +11,7 @@
 #include "../../include/Resources/TextureLoader.h"
 #include "../../include/Resources/Texture.h"
 
-Texture LoadFromFile(const std::string& path) {
+Texture TextureLoader::loadFromFile(const std::string& path) {
     int width, height, channels;
     stbi_set_flip_vertically_on_load(true);
     unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);

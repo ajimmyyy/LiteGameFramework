@@ -24,15 +24,30 @@ bool OpenGLRenderer::initialize() {
         return false;
     }
 
+    // 設定 viewport
+    int fbWidth, fbHeight;
+    glfwGetFramebufferSize(window->getWindow(), &fbWidth, &fbHeight);
+    glViewport(0, 0, fbWidth, fbHeight);
+
+    // 綁定 framebuffer size callback
+    glfwSetFramebufferSizeCallback(window->getWindow(), framebufferSizeCallback);
+
     // 設定shaders
     if (!setupShaders()) return false;
 
     // 開啟深度測試
     glEnable(GL_DEPTH_TEST);
 
-    // 相機設置
-    viewMatrix = glm::lookAt(glm::vec3(0, 0, 5), glm::vec3(0), glm::vec3(0, 1, 0));
+    // 預設相機設置
+    viewMatrix = glm::lookAt(
+        glm::vec3(0, 0, 5),
+        glm::vec3(0),
+        glm::vec3(0, 1, 0)
+        );
     projectionMatrix = glm::perspective(glm::radians(45.0f), 4.f / 3.f, 0.1f, 100.f);
+
+    // 預設材質
+    createDefaultTexture();
 
     return true;
 }
@@ -101,6 +116,15 @@ void OpenGLRenderer::shutdown() {
     }
 }
 
+void OpenGLRenderer::beginFrame() {
+    glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void OpenGLRenderer::endFrame() {
+    window->swapBuffers();
+}
+
 void OpenGLRenderer::draw(Model& model, const Texture& texture) {
     glUseProgram(shaderProgram);
 
@@ -131,6 +155,41 @@ void OpenGLRenderer::draw(Model& model, const Texture& texture) {
     }
 
     glBindVertexArray(0);
+}
+
+void OpenGLRenderer::draw(Model& model) {
+    glUseProgram(shaderProgram);
+
+    // 設定 MVP
+    GLint modelLoc = glGetUniformLocation(shaderProgram, "model");
+    GLint viewLoc  = glGetUniformLocation(shaderProgram, "view");
+    GLint projLoc  = glGetUniformLocation(shaderProgram, "projection");
+
+    auto identity = glm::mat4(1.0f);
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(identity));
+    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+    glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, defaultTexture);
+    glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
+
+    for (auto& mesh : model.meshes) {
+        if (!meshResourceCache.contains(&mesh)) {
+            uploadMesh(mesh);
+        }
+
+        const auto& res = meshResourceCache[&mesh];
+        glBindVertexArray(res.vao);
+        glDrawElements(GL_TRIANGLES, res.indexCount, GL_UNSIGNED_INT, nullptr);
+    }
+
+    glBindVertexArray(0);
+}
+
+void OpenGLRenderer::setViewMatrix(const glm::mat4& view, const glm::mat4& projection) {
+    viewMatrix = view;
+    projectionMatrix = projection;
 }
 
 GLuint OpenGLRenderer::uploadTexture(const Texture& texture) {
@@ -187,4 +246,20 @@ void OpenGLRenderer::uploadMesh(Mesh& mesh) {
     glBindVertexArray(0);
 
     meshResourceCache[&mesh] = res;
+}
+
+void OpenGLRenderer::framebufferSizeCallback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
+void OpenGLRenderer::createDefaultTexture() {
+    glGenTextures(1, &defaultTexture);
+    glBindTexture(GL_TEXTURE_2D, defaultTexture);
+
+    unsigned char whitePixel[4] = { 255, 255, 255, 255 };
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0,
+                 GL_RGBA, GL_UNSIGNED_BYTE, whitePixel);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }

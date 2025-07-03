@@ -13,6 +13,7 @@ public:
     [[nodiscard]] virtual bool shouldClose() const = 0;
     virtual void pollEvents() = 0;
     virtual void shutdown() = 0;
+    virtual void getSize(int& width, int& height) const = 0;
 
     virtual void* getNativeHandle() = 0;
 };

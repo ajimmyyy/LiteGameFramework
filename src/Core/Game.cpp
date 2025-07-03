@@ -39,7 +39,8 @@ void Game::init() {
 
     // 建立場景管理器並載入預設場景
     sceneManager = std::make_unique<SceneManager>();
-    sceneManager->loadInitialScene(renderer.get());
+    sceneManager->loadInitialScene(env.platform->getWindow(), renderer.get());
+    std::cout << "[Game] Initialized scene\n";
 
     // 建立並設定主循環
     gameLoop = std::make_unique<GameLoop>(
@@ -47,13 +48,17 @@ void Game::init() {
         std::move(env.time),
         std::move(env.platform)
     );
+    std::cout << "[Game] Initialized game loop\n";
+
+    // 資源加載器初始化
+    ResourceManager::init();
 
     std::cout << "[Game] Initialized.\n";
 }
 
 void Game::run() const {
     if (gameLoop)
-        gameLoop->Run();
+        gameLoop->run();
 }
 
 void Game::shutdown() {
@@ -65,4 +70,8 @@ void Game::shutdown() {
     sceneManager.reset();
     renderer.reset();
     std::cout << "[Game] Shutdown complete.\n";
+}
+
+ECSWorld& Game::getECSWorld() const {
+    return sceneManager->getECSWorld();
 }

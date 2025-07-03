@@ -11,12 +11,10 @@ GameLoop::GameLoop(SceneManager* sm, std::unique_ptr<ITime> t, std::unique_ptr<I
     lastFrameTime = time->getTime();
 }
 
-void GameLoop::Run() {
+void GameLoop::run() {
     while (!platform->shouldExit()) {
         float dt = calculateDeltaTime();
         accumulator += dt;
-
-        platform->pollEvents();
 
         while (accumulator >= fixedDelta) {
             sceneManager->update(dt);
@@ -26,7 +24,7 @@ void GameLoop::Run() {
         float alpha = accumulator / fixedDelta;
         sceneManager->render(alpha);
 
-        platform->swapBuffers();
+        platform->pollEvents();
     }
 }
 

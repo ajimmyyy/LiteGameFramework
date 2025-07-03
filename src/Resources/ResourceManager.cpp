@@ -3,17 +3,25 @@
 //
 
 #include "../../include/Resources/ResourceManager.h"
+
+#include <iostream>
+
 #include "../../include/Resources/ModelLoader.h"
 #include "../../include/Resources/TextureLoader.h"
 #include "../../include/Resources/AudioLoader.h"
 
-void ResourceManager::init() {
-    // 可設定 basePath、讀取設定檔等
+bool ResourceManager::init() {
+    setModelLoader(std::make_shared<ModelLoader>());
+    setTextureLoader(std::make_shared<TextureLoader>());
+    return true;
 }
 
 void ResourceManager::shutdown() {
     modelCache.clear();
     textureCache.clear();
+
+    modelLoader.reset();
+    textureLoader.reset();
 }
 
 void ResourceManager::setModelLoader(std::shared_ptr<IModelLoader> loader) {
@@ -29,10 +37,15 @@ std::shared_ptr<Model> ResourceManager::loadModel(const std::string& path) {
     if (it != modelCache.end())
         return it->second;
 
-    Model m = modelLoader->loadFromOBJ(path);
-    auto ptr = std::make_shared<Model>(std::move(m));
-    modelCache[path] = ptr;
-    return ptr;
+    try {
+        Model m = modelLoader->loadFromOBJ(path);
+        auto ptr = std::make_shared<Model>(std::move(m));
+        modelCache[path] = ptr;
+        return ptr;
+    } catch (const std::exception& e) {
+        std::cerr << "[ResourceManager] Failed to load model: " << path << "\n";
+        return nullptr;
+    }
 }
 
 std::shared_ptr<Model> ResourceManager::getModel(const std::string& path) {
@@ -48,10 +61,15 @@ std::shared_ptr<Texture> ResourceManager::loadTexture(const std::string& path) {
     if (it != textureCache.end())
         return it->second;
 
-    Texture t = textureLoader->loadFromFile(path);
-    auto ptr = std::make_shared<Texture>(std::move(t));
-    textureCache[path] = ptr;
-    return ptr;
+    try {
+        Texture t = textureLoader->loadFromFile(path);
+        auto ptr = std::make_shared<Texture>(std::move(t));
+        textureCache[path] = ptr;
+        return ptr;
+    } catch (const std::exception& e) {
+        std::cerr << "[ResourceManager] Failed to load texture: " << path << "\n";
+        return nullptr;
+    }
 }
 
 std::shared_ptr<Texture> ResourceManager::getTexture(const std::string& path) {

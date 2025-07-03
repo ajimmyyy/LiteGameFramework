@@ -11,6 +11,12 @@ void EntityManager::addComponent(Entity entity, T component) {
 }
 
 template<typename T>
+void EntityManager::removeComponent(Entity entity) {
+    auto& map = getComponentMap<T>();
+    map.erase(entity);
+}
+
+template<typename T>
 T& EntityManager::getComponent(Entity entity) {
     auto& map = getComponentMap<T>();
     return map.at(entity.getId());

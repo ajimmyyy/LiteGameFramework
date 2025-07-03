@@ -19,6 +19,7 @@ public:
     void pollEvents() override;
     void shutdown() override;
     void* getNativeHandle() override;
+    void getSize(int& width, int& height) const override;
     [[nodiscard]] GLFWwindow* getWindow() const;
 
 private:

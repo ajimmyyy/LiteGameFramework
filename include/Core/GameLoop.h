@@ -11,7 +11,7 @@
 class GameLoop {
 public:
     GameLoop(SceneManager* sceneManager, std::unique_ptr<ITime> t, std::unique_ptr<IPlatform> p);
-    void Run();
+    void run();
 
 private:
     SceneManager* sceneManager;

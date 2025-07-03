@@ -12,14 +12,13 @@
 #include "Systems/ISystem.h"
 #include "Systems/IRenderSystem.h"
 #include "../Renderer/IRenderer.h"
+#include "../Platform/IWindow.h"
 
 class ECSWorld {
 public:
     ECSWorld();
 
-    void init(IRenderer* renderer);
-
-    Entity createEntity();
+    void init(IWindow* window, IRenderer* renderer);
 
     template<typename T>
     void addComponent(Entity entity, T component);
