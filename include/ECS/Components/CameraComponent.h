@@ -15,7 +15,7 @@ struct CameraComponent {
     float fov = 45.0f;
     float aspect = 4.0f / 3.0f;
     float nearPlane = 0.1f;
-    float farPlane = 100.0f;
+    float farPlane = 500.0f;
 
     glm::mat4 viewMatrix{};
     glm::mat4 projectionMatrix{};

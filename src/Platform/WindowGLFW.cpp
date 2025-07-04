@@ -60,7 +60,3 @@ void* WindowGLFW::getNativeHandle() {
 void WindowGLFW::getSize(int& width, int& height) const {
     glfwGetWindowSize(window, &width, &height);
 }
-
-GLFWwindow* WindowGLFW::getWindow() const {
-    return window;
-}

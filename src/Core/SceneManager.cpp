@@ -4,9 +4,9 @@
 
 #include "../../include/Core/SceneManager.h"
 
-void SceneManager::loadInitialScene(IWindow* window, IRenderer* renderer) {
+void SceneManager::loadInitialScene(IWindow* window, IRenderer* renderer, InputManager* inputManager) {
     currentScene = std::make_unique<Scene>();
-    currentScene->init(window, renderer);
+    currentScene->init(window, renderer, inputManager);
 }
 
 void SceneManager::update(float deltaTime) const {

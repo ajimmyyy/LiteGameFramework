@@ -7,10 +7,11 @@
 #include "Scene.h"
 #include "../Renderer/IRenderer.h"
 #include "../Platform/IWindow.h"
+#include "../Input/InputManager.h"
 
 class SceneManager {
 public:
-    void loadInitialScene(IWindow* window, IRenderer* renderer);
+    void loadInitialScene(IWindow* window, IRenderer* renderer, InputManager* inputManager);
     void update(float deltaTime) const;
     void render(float alpha) const;
     [[nodiscard]] ECSWorld& getECSWorld() const;

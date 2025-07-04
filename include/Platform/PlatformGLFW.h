@@ -8,6 +8,7 @@
 
 #include "IPlatform.h"
 #include "WindowGLFW.h"
+#include "../Input/InputManager.h"
 
 class PlatformGLFW : public IPlatform {
 public:
@@ -17,7 +18,9 @@ public:
     [[nodiscard]] bool shouldExit() const override;
     void swapBuffers() override;
     [[nodiscard]] WindowGLFW* getWindow() const override;
+    [[nodiscard]] InputManager* getInputManager() const override;
 
 private:
     std::unique_ptr<WindowGLFW> window;
+    std::unique_ptr<InputManager> inputManager;
 };
