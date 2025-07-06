@@ -46,6 +46,8 @@ bool OpenGLRenderer::initialize() {
 
     // 開啟深度測試
     glEnable(GL_DEPTH_TEST);
+
+    // 開啟混和
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -56,6 +58,14 @@ bool OpenGLRenderer::initialize() {
         glm::vec3(0, 1, 0)
         );
     projectionMatrix = glm::perspective(glm::radians(45.0f), 4.f / 3.f, 0.1f, 100.f);
+
+    // 設置文字框位置
+    int width, height;
+    window->getSize(width, height);
+    orthoMatrix = glm::ortho(
+        0.0f, static_cast<float>(width),
+        0.0f, static_cast<float>(height)
+    );
 
     // 預設材質
     createDefaultTexture();
@@ -163,20 +173,6 @@ bool OpenGLRenderer::setupShaders() {
 }
 
 bool OpenGLRenderer::setupText() {
-    // setup VAO, VBO
-    glGenVertexArrays(1, &textVAO);
-    glGenBuffers(1, &textVBO);
-
-    glBindVertexArray(textVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, textVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, nullptr, GL_DYNAMIC_DRAW);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
     // setup freeType
     FT_Library ft;
     if (FT_Init_FreeType(&ft)) {
@@ -191,7 +187,6 @@ bool OpenGLRenderer::setupText() {
         FT_Done_FreeType(ft);
         return false;
     }
-
     // 設定像素大小
     FT_Set_Pixel_Sizes(face, 0, 48);
 
@@ -257,7 +252,7 @@ void OpenGLRenderer::shutdown() {
 }
 
 void OpenGLRenderer::beginFrame() {
-    glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -328,11 +323,24 @@ void OpenGLRenderer::draw(Model& model) {
 }
 
 void OpenGLRenderer::drawText(const std::string& text, float x, float y, glm::vec3 color, float scale) {
+    glDisable(GL_DEPTH_TEST);
+
     glUseProgram(textShaderProgram);
     glUniform3f(glGetUniformLocation(textShaderProgram, "textColor"), color.r, color.g, color.b);
-    glUniformMatrix4fv(glGetUniformLocation(textShaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(textShaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(orthoMatrix));
+    glUniform1i(glGetUniformLocation(textShaderProgram, "text"), 0);
     glActiveTexture(GL_TEXTURE0);
-    glBindVertexArray(textVAO);
+
+    GLuint vao, vbo;
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &vbo);
+
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, nullptr, GL_DYNAMIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
 
     for (char c : text) {
         const auto& charData = characterCache[c];
@@ -354,15 +362,20 @@ void OpenGLRenderer::drawText(const std::string& text, float x, float y, glm::ve
         };
 
         glBindTexture(GL_TEXTURE_2D, charData.textureID);
-        glBindBuffer(GL_ARRAY_BUFFER, textVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
         x += (metrics.advance >> 6) * scale;
     }
 
+    // 釋放vao, vbo
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
+    glDeleteVertexArrays(1, &vao);
+    glDeleteBuffers(1, &vbo);
+
+    glEnable(GL_DEPTH_TEST);
 }
 
 void OpenGLRenderer::setViewMatrix(const glm::mat4& view, const glm::mat4& projection) {

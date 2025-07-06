@@ -43,10 +43,7 @@ private:
     // MVP
     glm::mat4 viewMatrix;
     glm::mat4 projectionMatrix;
-
-    // Text
-    GLuint textVAO = 0;
-    GLuint textVBO = 0;
+    glm::mat4 orthoMatrix;
 
     //Cache
     std::unordered_map<std::string, GLuint> textureCache;
