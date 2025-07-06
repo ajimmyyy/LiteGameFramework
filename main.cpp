@@ -17,22 +17,6 @@ int main(int argc, char** argv) {
     ECSWorld world = game->getECSWorld();
     EntityManager entityManager = world.getEntityManager();
 
-    Entity camInfo_e = entityManager.createEntity();
-    TextComponent camInfo_c = TextComponent{
-        .content = "TEST",
-        .screenPosition = {10, 10},
-        .color = {0.0, 0, 0},
-        .scale = 3.0f,
-        // .generator = [camera_e, &entityManager]() {
-        //     const auto& cam = entityManager.getComponent<CameraComponent>(camera_e);
-        //     return "Camera: (" +
-        //            std::to_string(cam.position.x) + ", " +
-        //            std::to_string(cam.position.y) + ", " +
-        //            std::to_string(cam.position.z) + ")";
-        // },
-    };
-    entityManager.addComponent(camInfo_e, camInfo_c);
-
     // create entity
     auto teapot_e = entityManager.createEntity();
     auto teapot_c = RenderComponent(
@@ -41,7 +25,10 @@ int main(int argc, char** argv) {
     entityManager.addComponent(teapot_e, teapot_c);
 
     auto camera_e = entityManager.createEntity();
-    auto camera_c = CameraComponent();
+    auto camera_c = CameraComponent{
+        .position = glm::vec3(0.0f, 0.0f, 200.0f),
+        .mode = CameraMode::LookAtTarget,
+    };
     entityManager.addComponent(camera_e, camera_c);
     entityManager.addComponent(camera_e, MainCameraTag{});
 
