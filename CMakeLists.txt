@@ -17,11 +17,20 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(glfw)
 
+# ───── 加入 freetype ─────
+set(FT_DISABLE_HARFBUZZ ON CACHE BOOL "" FORCE)
+FetchContent_Declare(
+        freetype
+        GIT_REPOSITORY https://gitlab.freedesktop.org/freetype/freetype.git
+        GIT_TAG        VER-2-13-2
+)
+FetchContent_MakeAvailable(freetype)
+
 # ───── 設定 GLM ─────
 set(GLM_DIR "${CMAKE_SOURCE_DIR}/deps/glm")
 include_directories(${GLM_DIR})
 
-# ───── 加入 glad ─────
+# ───── 設定 glad ─────
 set(GLAD_DIR "${CMAKE_SOURCE_DIR}/deps/glad")
 add_subdirectory(deps/glad)
 
@@ -44,11 +53,7 @@ file(GLOB_RECURSE SOURCES
 )
 
 # ───── 主程式 ─────
-add_executable(LiteGameFramework ${SOURCES}
-        include/ECS/Components/CameraComponent.h
-        src/ECS/Systems/CameraSystem.cpp
-        include/ECS/Systems/CameraSystem.h
-        include/ECS/Tags/MainCameraTag.h)
+add_executable(LiteGameFramework ${SOURCES})
 
 target_include_directories(LiteGameFramework PRIVATE
         ${CMAKE_SOURCE_DIR}/src
@@ -62,6 +67,7 @@ target_include_directories(LiteGameFramework PRIVATE
 target_link_libraries(LiteGameFramework
         glfw
         glad
+        freetype
         ${OPENGL_gl_LIBRARY}
 )
 

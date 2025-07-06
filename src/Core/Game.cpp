@@ -39,7 +39,11 @@ void Game::init() {
 
     // 建立場景管理器並載入預設場景
     sceneManager = std::make_unique<SceneManager>();
-    sceneManager->loadInitialScene(env.platform->getWindow(), renderer.get());
+    sceneManager->loadInitialScene(
+        env.platform->getWindow(),
+        renderer.get(),
+        env.platform->getInputManager()
+    );
     std::cout << "[Game] Initialized scene\n";
 
     // 建立並設定主循環

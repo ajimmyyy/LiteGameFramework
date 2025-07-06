@@ -13,12 +13,13 @@
 #include "Systems/IRenderSystem.h"
 #include "../Renderer/IRenderer.h"
 #include "../Platform/IWindow.h"
+#include "../Input/InputManager.h"
 
 class ECSWorld {
 public:
     ECSWorld();
 
-    void init(IWindow* window, IRenderer* renderer);
+    void init(IWindow* window, IRenderer* renderer, InputManager* inputManager);
 
     template<typename T>
     void addComponent(Entity entity, T component);

@@ -18,6 +18,9 @@ public:
     virtual void draw(Model& model, const Texture& texture) = 0;
     virtual void draw(Model& model) = 0;
 
+    // 繪製文字
+    virtual void drawText(const std::string& text, float x, float y, glm::vec3 color, float scale) = 0;
+
     // 設定相機、光源
     virtual void setViewMatrix(const glm::mat4& view, const glm::mat4& projection) = 0;
 

@@ -4,10 +4,10 @@
 
 #include "../../include/Core/Scene.h"
 
-void Scene::init(IWindow* window, IRenderer* renderer) {
+void Scene::init(IWindow* window, IRenderer* renderer, InputManager* inputManager) {
     this->renderer = renderer;
     world = std::make_unique<ECSWorld>();
-    world->init(window, renderer);
+    world->init(window, renderer, inputManager);
 }
 
 void Scene::update(float deltaTime) const {

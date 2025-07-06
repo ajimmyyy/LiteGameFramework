@@ -6,13 +6,18 @@
 
 #include "../../include/ECS/Systems/CameraSystem.h"
 #include "../../include/ECS/Systems/RenderSystem.h"
+#include "../../include/ECS/Systems/InputSystem.h"
+#include "../../include/ECS/Systems/TextRenderSystem.h"
+#include "../../include/ECS/Systems/TextUpdateSystem.h"
 
 ECSWorld::ECSWorld() = default;
 
-void ECSWorld::init(IWindow* window, IRenderer* renderer) {
-    // addUpdateSystem(std::make_unique<InputSystem>());
+void ECSWorld::init(IWindow* window, IRenderer* renderer, InputManager* inputManager) {
     addRenderSystem(std::make_unique<RenderSystem>(renderer, &entityManager));
+    addRenderSystem(std::make_unique<TextRenderSystem>(renderer, &entityManager));
     addUpdateSystem(std::make_unique<CameraSystem>(window, renderer, &entityManager));
+    addUpdateSystem(std::make_unique<InputSystem>(&entityManager, inputManager));
+    addUpdateSystem(std::make_unique<TextUpdateSystem>(&entityManager));
 }
 
 void ECSWorld::addUpdateSystem(const std::shared_ptr<ISystem>& system) {
